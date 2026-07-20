@@ -578,6 +578,7 @@ static GtkWidget *trg_prefs_serverPage(TrgPreferencesDialog *dlg)
 
     GtkWidget *w, *t, *frame, *frameHbox, *profileLabel;
     GtkWidget *profileButtonsHbox;
+    GtkWidget *scrolled_window;
     GtkListStore *model;
     TrgPersistentTreeView *ptv;
     trg_pref_widget_desc *wd;
@@ -669,8 +670,12 @@ static GtkWidget *trg_prefs_serverPage(TrgPreferencesDialog *dlg)
     gtk_frame_set_label_widget(GTK_FRAME(frame), frameHbox);
     gtk_container_set_border_width(GTK_CONTAINER(frame), 5);
     gtk_container_add(GTK_CONTAINER(frame), t);
+    scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_NEVER,
+                                   GTK_POLICY_AUTOMATIC);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), frame);
 
-    return frame;
+    return scrolled_window;
 }
 
 static GObject *trg_preferences_dialog_constructor(GType type, guint n_construct_properties,
