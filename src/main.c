@@ -50,6 +50,7 @@ static void bindtext_wrapper(void)
 int main(int argc, char *argv[])
 {
     g_set_application_name(PACKAGE_NAME);
+    g_set_prgname(APPLICATION_ID);
     bindtext_wrapper();
 
     g_autoptr(TrgClient) client = trg_client_new();
