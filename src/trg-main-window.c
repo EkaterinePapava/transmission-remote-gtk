@@ -282,9 +282,24 @@ static void on_torrent_added(TrgTorrentModel *model, GtkTreeIter *iter, gpointer
                                TRG_PREFS_KEY_ADD_NOTIFY, iter, data);
 }
 
+static void save_window_size(TrgMainWindow *win)
+{
+    TrgPrefs *prefs = trg_client_get_prefs(win->client);
+    gint width, height;
+
+    gtk_window_get_size(GTK_WINDOW(win), &width, &height);
+
+    trg_prefs_set_int(prefs, TRG_PREFS_KEY_WINDOW_HEIGHT, height, TRG_PREFS_GLOBAL);
+    trg_prefs_set_int(prefs, TRG_PREFS_KEY_WINDOW_WIDTH, width, TRG_PREFS_GLOBAL);
+}
+
 static gboolean delete_event(GtkWidget *w, GdkEvent *event G_GNUC_UNUSED,
                              gpointer data G_GNUC_UNUSED)
 {
+    TrgMainWindow *win = TRG_MAIN_WINDOW(w);
+
+    save_window_size(win);
+
     return FALSE;
 }
 
@@ -292,8 +307,6 @@ static void destroy_window(TrgMainWindow *win, gpointer data G_GNUC_UNUSED)
 {
     TrgPrefs *prefs = trg_client_get_prefs(win->client);
 
-    trg_prefs_set_int(prefs, TRG_PREFS_KEY_WINDOW_HEIGHT, win->height, TRG_PREFS_GLOBAL);
-    trg_prefs_set_int(prefs, TRG_PREFS_KEY_WINDOW_WIDTH, win->width, TRG_PREFS_GLOBAL);
     trg_prefs_set_int(prefs, TRG_PREFS_KEY_NOTEBOOK_PANED_POS,
                       gtk_paned_get_position(GTK_PANED(win->vpaned)), TRG_PREFS_GLOBAL);
     trg_prefs_set_int(prefs, TRG_PREFS_KEY_STATES_PANED_POS,
@@ -1341,6 +1354,9 @@ static void trg_main_window_set_property(GObject *object, guint property_id, con
 
 static void quit_cb(GtkWidget *w G_GNUC_UNUSED, gpointer data)
 {
+    TrgMainWindow *win = TRG_MAIN_WINDOW(data);
+
+    save_window_size(win);
     gtk_widget_destroy(GTK_WIDGET(data));
 }
 
